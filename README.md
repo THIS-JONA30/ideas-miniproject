@@ -45,7 +45,7 @@ Frontend: Tailwind CSS / Livewire v4 (or Inertia.js)
 Clone the repository:
 
 Bash
-git clone https://github.com/your-username/ideas.git
+git clone https://github.com/your-username/ideas-miniproject.git
 cd ideas
 Install dependencies:
 (Note: Laravel 13 requires PHP 8.3 minimum)
