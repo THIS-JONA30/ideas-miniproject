@@ -8,8 +8,8 @@ use App\Http\Controllers\SessionsController;
 Route::redirect('/', '/ideas');
 
 Route::middleware('auth')->group(function() {
-    Route::get('/ideas', [IdeaController::class, 'index']);
-
+    Route::get('/ideas', [IdeaController::class, 'index'])->name('idea.index');
+    Route::get('/idea/{idea}', [IdeaController::class, 'show'])->name('idea.show');
 
 
     Route::delete('logout', [SessionsController::class, 'destroy']);
