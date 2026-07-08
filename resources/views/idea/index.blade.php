@@ -7,12 +7,12 @@
 
         {{-- Status Filter --}}
         <div class="mt-5 flex justify-start items-center gap-4">
-            <a href="{{ url('/ideas') }}" class="btn {{ empty(request('status'))? '' : 'btn-outlined' }}">All</a>
+            <a href="{{ url('/ideas') }}" class="btn {{ empty(request('status'))? '' : 'btn-outlined' }}">All <span class="text-sm pl-3">{{ $count->get('all') }}</span> </a>
             @foreach (app\IdeaStatus::cases() as $status)
                 <a href="{{ url('/ideas?status=' . $status->value) }}" 
                     class="btn {{ (request('status') === $status->value)? '' : 'btn-outlined' }}">
                     {{ $status->label() }}
-                    <span class="text-xs pl-3">2</span>
+                    <span class="text-xs pl-3">{{ ($count->get($status->value)) }}</span>
                 </a>
             @endforeach
 

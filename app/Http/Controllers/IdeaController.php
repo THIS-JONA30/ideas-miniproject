@@ -6,6 +6,7 @@ use App\Models\Idea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreIdeaRequest;
 use App\Http\Requests\UpdateIdeaRequest;
+use App\IdeaStatus;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,16 +18,28 @@ class IdeaController extends Controller
      */
     public function index(Request $request)
     {
-        $ideas = Auth::user()->ideas()
-        ->when($request->status, fn($query, $status) =>
+        $user = Auth::user();
+
+        $status = $request->status;
+
+        $in_status = array_column(IdeaStatus::cases(), 'value');
+
+        if(!in_array($status, $in_status)){
+            $status = NULL;
+        }
+        
+        // dd(array_column($in_status, 'value'));
+
+        $ideas = $user->ideas()
+        ->when($status, fn($query, $status) =>
             $query->where('status', $status)
         )
         ->get();
 
-        // dd($ideas);
         
         return view('idea.index', [
-            'ideas' => $ideas
+            'ideas' => $ideas,
+            'count' => Idea::statusCount($user)
         ]);
     }
 
