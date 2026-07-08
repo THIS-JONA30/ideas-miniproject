@@ -5,7 +5,22 @@
             <p class="text-muted-foreground text-sm mt-2">Capture your thoughts. Make a plan.</p>
         </header>
 
-        <div class="mt-10 text-muted-foreground">
+        {{-- Status Filter --}}
+        <div class="mt-5 flex justify-start items-center gap-4">
+            <a href="{{ url('/ideas') }}" class="btn {{ empty(request('status'))? '' : 'btn-outlined' }}">All</a>
+            @foreach (app\IdeaStatus::cases() as $status)
+                <a href="{{ url('/ideas?status=' . $status->value) }}" 
+                    class="btn {{ (request('status') === $status->value)? '' : 'btn-outlined' }}">
+                    {{ $status->label() }}
+                    <span class="text-xs pl-3">2</span>
+                </a>
+            @endforeach
+
+            {{-- <a href="{{ url('/ideas?status=in_progress') }}" class="">In Progress</a>
+            <a href="{{ url('/ideas?status=completed') }}" class="">Completed</a> --}}
+        </div>
+
+        <div class="mt-3 text-muted-foreground">
             <div class="grid md:grid-cols-2 gap-6">
                 @forelse ($ideas as $idea)
                     <x-card href="{{ route('idea.show', $idea->id) }}">

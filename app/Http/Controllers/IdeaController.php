@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreIdeaRequest;
 use App\Http\Requests\UpdateIdeaRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class IdeaController extends Controller
@@ -14,9 +15,13 @@ class IdeaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $ideas = Auth::user()->ideas()->get();
+        $ideas = Auth::user()->ideas()
+        ->when($request->status, fn($query, $status) =>
+            $query->where('status', $status)
+        )
+        ->get();
 
         // dd($ideas);
         
