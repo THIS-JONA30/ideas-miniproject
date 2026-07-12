@@ -64,7 +64,8 @@ class IdeaController extends Controller
      */
     public function show(Idea $idea)
     {
-        return view('idea.show', $idea);
+        // dd($idea);
+        return view('idea.show', ['idea' => $idea]);
     }
 
     /**
