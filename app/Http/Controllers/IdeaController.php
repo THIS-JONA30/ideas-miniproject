@@ -21,17 +21,11 @@ class IdeaController extends Controller
         $user = Auth::user();
 
         $status = $request->status;
-
-        $in_status = array_column(IdeaStatus::cases(), 'value');
-
-        if(!in_array($status, $in_status)){
-            $status = NULL;
-        }
         
         // dd(array_column($in_status, 'value'));
 
         $ideas = $user->ideas()
-        ->when($status, fn($query, $status) =>
+        ->when(in_array($status, IdeaStatus::values()), fn($query) =>
             $query->where('status', $status)
         )
         ->get();
@@ -56,7 +50,8 @@ class IdeaController extends Controller
      */
     public function store(StoreIdeaRequest $request)
     {
-        //
+        // Store the new Idea
+        dd($request->all());
     }
 
     /**
@@ -89,6 +84,8 @@ class IdeaController extends Controller
      */
     public function destroy(Idea $idea)
     {
-        //
+        $idea->delete($idea->id);   
+
+        return redirect('/');
     }
 }
