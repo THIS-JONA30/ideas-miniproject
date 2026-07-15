@@ -28,6 +28,7 @@ class IdeaController extends Controller
         ->when(in_array($status, IdeaStatus::values()), fn($query) =>
             $query->where('status', $status)
         )
+        ->latest()
         ->get();
 
         
@@ -51,7 +52,12 @@ class IdeaController extends Controller
     public function store(StoreIdeaRequest $request)
     {
         // Store the new Idea
-        dd($request->all());
+        // dd($request->all());
+
+        Auth::user()->ideas()->create($request->validated());
+
+        return to_route('idea.index')
+            ->with('success', 'Idea created successfully');
     }
 
     /**

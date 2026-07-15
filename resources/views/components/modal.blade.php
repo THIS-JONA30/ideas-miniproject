@@ -6,7 +6,7 @@
     @open-modal.window=" if($event.detail === name) show = true;"
     x-transition:enter="ease-out duration-200"
     x-transition:enter-start="opacity-0 -translate-y-4 -translate-x-4"
-
+    @close-modal="show = false"
     x-transition:leave="duration-500"
     x-transition:leave-end="opacity-0 -translate-y-4 -translate-x-4"
 
@@ -30,7 +30,7 @@
             </button>
         </div>  
 
-        <div class="w-full">
+        <div class="w-full mt-3">
             {{ $slot }}
         </div>
     </x-card>

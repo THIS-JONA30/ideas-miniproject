@@ -58,15 +58,46 @@
 
         {{-- Modal for creating your idea --}}
         <x-modal name="create-idea" title="Create a new idea">
-            <form action="{{ route('idea.store') }}" method="" class="">
+            <form x-data="{status: 'pending'}" action="{{ route('idea.store') }}" method="POST" class="">
                 @csrf
-                <x-form.input type="text" title="Idea Title" name="title" id="idea_title" placeholder="Enter the Title for the Idea"/>
-                <x-form.input type="text" title="Idea description" name="description" id="idea_description" placeholder="Enter the Description"/>
-                <x-form.input type="text" title="Idea links" name="links" id="idea_links" placeholder="Enter the Links"/>
+                <div class="space-y-6">
+                    <x-form.input type="text" title="Idea Title" name="title" id="idea_title" placeholder="Enter the title for the Idea" required />
 
-                <button class="btn ">
-                    Create Idea
-                </button>
+                    <div class="space-y-2">
+                        <label for="status" class="label ">Status</label>
+
+                        <div class="flex gap-x-3">
+                            @foreach (app\IdeaStatus::cases() as $status)
+                                <button
+                                    type="button" 
+                                    @click="status = @js($status->value)"
+                                    class="btn flex-1 h-10"
+                                    :class="status === @js($status->value)? '' : 'btn-outlined'"
+                                >
+                                    {{ $status->label() }}
+                                </button>
+                            @endforeach
+
+                            <input type="hidden" name="status" :value="status">
+                        </div>
+
+                        <x-form.error name="status" />
+                    </div>
+
+                    <x-form.input type="textarea" title="Idea Description" name="description" id="idea_description" placeholder="Enter the Description for the idea" rows="5"/>
+
+                    <x-form.input type="text" title="Idea links" name="links" id="idea_links" placeholder="Enter the Links for your idea"/>
+                </div>
+
+                <div class="mt-3 flex justify-end items-center gap-x-3">
+                    <button type="reset" class="btn btn-outlined w-1/3 h-10" @click="$dispatch('close-modal')">
+                        Cancel
+                    </button>
+                    <button class="btn w-1/3 h-10">
+                        Create
+                    </button>
+
+                </div>
             </form>
         </x-modal>
     </div>
