@@ -30,13 +30,35 @@
             <div class="text-foreground max-w-none cursor-pointer">{{ $idea->description }}</div>
         </x-card>
 
+        @if ($idea->steps->count())
+            <div class="">
+                <h3 class="font-bold text-xl mt-6">Actionable Steps</h3>
+
+                <div class="mt-3 space-y-2">
+                    @foreach ($idea->steps as $step)
+                        <x-card is="div" class="text-primary font-medium flex gap-3 items-center">
+                            <form action="{{ route('step.update', $step) }}" method="post">
+                                @csrf
+                                @method('PATCH')
+                                
+                                <div class="flex items-center justify-start gap-x-3 w-full">
+                                    <button type="submit" role="checkbox" class="size-5 flex items-center justify-center rounded-lg text-primary-foreground border border-primary {{ ($step->completed)? 'bg-primary' : '' }}">&check;</button>
+                                    <span class=" {{ ($step->completed)? 'line-through text-muted-foreground' : 'text-white' }}">{{ $step->description }}</span>
+                                </div>
+                            </form>
+                        </x-card>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         @if ($idea->links)
             <div class="">
                 <h3 class="font-bold text-xl mt-6">Links</h3>
 
-                <div class="flex flex-col justify-start items-start gap-y-3">
+                <div class=" mt-3 flex flex-col justify-start items-start gap-y-3">
                     @foreach ($idea->links as $link)
-                        <x-card href="{{ $link }}" class="text-primary font-medium flex gap-3 items-center w-full">
+                        <x-card is="button" href="{{ $link }}" class="text-primary font-medium flex gap-3 items-center w-full">
                             {{ $link }}
                         </x-card>
                     @endforeach
