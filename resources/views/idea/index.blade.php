@@ -58,7 +58,16 @@
 
         {{-- Modal for creating your idea --}}
         <x-modal name="create-idea" title="Create a new idea">
-            <form x-data="{status: 'pending'}" action="{{ route('idea.store') }}" method="POST" class="">
+            <form 
+                x-data="{
+                    status: 'pending',
+                    newLink: '',
+                    links: [],
+
+                    newStep: '',
+                    steps: []
+                }" 
+                action="{{ route('idea.store') }}" method="POST" class="">
                 @csrf
                 <div class="space-y-6">
                     <x-form.input type="text" title="Idea Title" name="title" id="idea_title" placeholder="Enter the title for the Idea" required />
@@ -86,7 +95,60 @@
 
                     <x-form.input type="textarea" title="Idea Description" name="description" id="idea_description" placeholder="Enter the Description for the idea" rows="5"/>
 
-                    <x-form.input type="text" title="Idea links" name="links" id="idea_links" placeholder="Enter the Links for your idea"/>
+                    {{-- Steps --}}
+                    <div class="">
+                        <fieldset class="space-y-3">
+                            <legend class="label">Actionable Steps</legend>
+
+                            <template x-for="(step, index) in steps">
+                                <div class="flex justify-between items-center gap-x-2">
+                                    <input type="text" name="steps[]" id="" x-model="step" class="input">
+                                    <button type="button" @click="steps.splice(index, 1)" class="btn bg-red-600">X</button>
+                                </div>
+                            </template>
+
+                            <div class="flex gap-x-2 items-center">
+                                <input type="text" name="" id="new-step" placeholder="Enter a step"  class="input flex-1" spellcheck="false"
+                                    x-model="newStep"
+                                >
+
+                                <button aria-label="add-idea-step" type="button" class="btn" 
+                                    @click="steps.push(newStep.trim()); newStep = '';"
+                                    :disabled="newStep.trim().length === 0"
+                                >
+                                    +
+                                </button>
+                            </div>
+
+                            {{-- <p x-text="steps"></p> --}}
+                        </fieldset>
+                    </div>
+
+                    {{-- Links --}}
+                    <div class="">
+                        <fieldset class="space-y-3">
+                            <legend class="label">Links</legend>
+
+                            <template x-for="(link, index) in links">
+                                <div class="flex justify-between items-center gap-x-2">
+                                    <input type="text" name="links[]" id="" x-model="link" class="input">
+                                    <button type="button" @click="links.splice(index, 1)" class="btn bg-red-600">X</button>
+                                </div>
+                            </template>
+
+                            <div class="flex gap-x-2 items-center">
+                                <input type="url" name="" id="new-link" placeholder="http://example.com" autocomplete="url" class="input flex-1" spellcheck="false"
+                                    x-model="newLink"
+                                >
+                                <button aria-label="add-idea-link" type="button" class="btn" 
+                                    @click="links.push(newLink.trim()); newLink = '';"
+                                    :disabled="newLink.trim().length === 0"
+                                >
+                                    +
+                                </button>
+                            </div>
+                        </fieldset>
+                    </div>
                 </div>
 
                 <div class="mt-3 flex justify-end items-center gap-x-3">

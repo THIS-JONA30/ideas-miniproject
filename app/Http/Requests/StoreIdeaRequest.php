@@ -24,8 +24,12 @@ class StoreIdeaRequest extends FormRequest
     {
         return [
             'title' => 'required|string|min:5|max:255',
-            'description' => 'nullable|max:255',
-            'status' => 'required'
+            'description' => 'nullable|string|max:255',
+            'status' => 'required|string',
+            'links' => 'nullable|array',
+            'links.*' => 'url|max:255',
+            'steps' => 'nullable|array',
+            'steps.*' => 'string|max:255'
         ];
     }
 }

@@ -18,7 +18,7 @@
 >
     <x-card
         @click.away="show = false" 
-        class="shadow-xl max-w-2xl w-full max-h-[80dvh] overflow-auto"
+        class="shadow-xl max-w-2xl w-full max-h-[80dvh] scrollbar-none overflow-auto"
     >
         <div class="w-full flex items-center justify-between">
             <h2 id="modal-{{ $name }}-title" class="text-xl font-bold">{{ $title }}</h2>

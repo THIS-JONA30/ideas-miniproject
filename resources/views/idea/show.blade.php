@@ -34,9 +34,9 @@
             <div class="">
                 <h3 class="font-bold text-xl mt-6">Links</h3>
 
-                <div class="flex flex-col justify-start items-center gap-y-3">
+                <div class="flex flex-col justify-start items-start gap-y-3">
                     @foreach ($idea->links as $link)
-                        <x-card href="{{ $link }}" class="text-primary font-medium flex gap-3 items-center">
+                        <x-card href="{{ $link }}" class="text-primary font-medium flex gap-3 items-center w-full">
                             {{ $link }}
                         </x-card>
                     @endforeach
