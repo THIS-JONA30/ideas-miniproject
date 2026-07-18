@@ -34,8 +34,14 @@
         <div class="mt-3 text-muted-foreground">
             <div class="grid md:grid-cols-2 gap-6">
                 @forelse ($ideas as $idea)
-                    <x-card href="{{ route('idea.show', $idea->id) }}">
-                        <h3 class="text-foreground text-lg">{{ $idea->title }}</h3>
+                    <x-card href="{{ route('idea.show', $idea->id) }}" class="overflow-hidden">
+                        <div class="-mt-4 -mx-4 rounded-lg rounded-br-none rounded-bl-none overflow-hidden">
+                            @if ($idea->image_path)
+                                <img src="{{ asset("storage/$idea->image_path") }}" alt="Featured Image" class="w-full h-auto object-cover">
+                            @endif
+                        </div>
+
+                        <h3 class="mt-2 text-foreground text-lg">{{ $idea->title }}</h3>
 
                         <div class="mt-1">
                             <x-idea.status-label status="{{ $idea->status }}">
@@ -67,7 +73,7 @@
                     newStep: '',
                     steps: []
                 }" 
-                action="{{ route('idea.store') }}" method="POST" class="">
+                action="{{ route('idea.store') }}" enctype="multipart/form-data" method="POST" class="">
                 @csrf
                 <div class="space-y-6">
                     <x-form.input type="text" title="Idea Title" name="title" id="idea_title" placeholder="Enter the title for the Idea" required />
@@ -94,6 +100,13 @@
                     </div>
 
                     <x-form.input type="textarea" title="Idea Description" name="description" id="idea_description" placeholder="Enter the Description for the idea" rows="5"/>
+
+                    {{-- Idea Image --}}
+                    <div class="space-y-2">
+                        <label for="image" class="label">Featured Image</label>
+                        <input type="file" accept="image/*" name="image" src="" alt="">
+                        <x-form.error name="image" />
+                    </div>
 
                     {{-- Steps --}}
                     <div class="">
