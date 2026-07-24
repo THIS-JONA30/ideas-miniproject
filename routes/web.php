@@ -14,6 +14,8 @@ Route::middleware('auth')->group(function() {
     Route::get('/idea/{idea}', [IdeaController::class, 'show'])->name('idea.show');
     Route::delete('/idea/{idea}', [IdeaController::class, 'destroy'])->name('idea.delete');
 
+    Route::delete('/idea/{idea}/image', [IdeaController::class, 'destroyImage'])->name('idea.destroyImage');
+
     Route::patch('/step/{step}', [StepController::class, 'update'])->name('step.update');
 
     Route::delete('logout', [SessionsController::class, 'destroy']);

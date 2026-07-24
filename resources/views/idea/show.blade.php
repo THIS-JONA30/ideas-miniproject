@@ -4,7 +4,13 @@
             <a href="{{ route('idea.index') }}" class="btn btn-outlined">Back to Home</a>
 
             <div class="flex justify-between items-center gap-2">
-                <a href="" class="btn">Edit Idea</a>
+                <button
+                    x-data
+                    @click="$dispatch('open-modal', 'edit-idea')"
+                    class="btn btn-outlined">
+                    Edit Idea
+                </button>
+
                 <form action="{{ route('idea.delete', $idea) }}" method="POST">
                     @csrf
                     @method('DELETE')
@@ -33,9 +39,11 @@
                 <div class="text-muted-foreground text-sm">{{ $idea->created_at->diffForHumans() }}</div>
             </div>
     
-            <x-card class="mt-4">
-                <div class="text-foreground max-w-none cursor-pointer">{{ $idea->description }}</div>
-            </x-card>
+            @if ($idea->description)
+                <x-card class="mt-4">
+                    <div class="text-foreground max-w-none cursor-pointer">{{ $idea->description }}</div>
+                </x-card>
+            @endif
     
             @if ($idea->steps->count())
                 <div class="">
@@ -73,5 +81,7 @@
                 </div>
             @endif
         </div>
+
+        <x-idea.modal :idea="$idea" />
     </div>
 </x-layout>

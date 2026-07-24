@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateIdea;
 use App\Models\Idea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreIdeaRequest;
@@ -10,6 +11,8 @@ use App\IdeaStatus;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class IdeaController extends Controller
 {
@@ -18,6 +21,7 @@ class IdeaController extends Controller
      */
     public function index(Request $request)
     {
+        
         $user = Auth::user();
 
         $status = $request->status;
@@ -49,22 +53,9 @@ class IdeaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreIdeaRequest $request)
+    public function store(StoreIdeaRequest $request, CreateIdea $action)
     {
-        // Store the new Idea
-        // dd($request->all());
-
-        $idea = Auth::user()->ideas()->create($request->safe()->except(['steps', 'image']));
-
-        $idea->steps()->createMany(
-            collect($request->steps)->map(fn($step) => ['description' => $step])
-        );
-
-        $image_path = $request->image->store('ideas', 'public');
-
-        $idea->update([
-            'image_path' => $image_path
-        ]);
+        $action->handle($request->safe()->all(), $request->user);
 
         return to_route('idea.index')
             ->with('success', 'Idea created successfully');
@@ -76,6 +67,8 @@ class IdeaController extends Controller
     public function show(Idea $idea)
     {
         // dd($idea);
+        Gate::authorize('workWith', $idea);
+
         return view('idea.show', ['idea' => $idea]);
     }
 
@@ -84,7 +77,7 @@ class IdeaController extends Controller
      */
     public function edit(Idea $idea)
     {
-        //
+        Gate::authorize('workWith', $idea);
     }
 
     /**
@@ -92,7 +85,8 @@ class IdeaController extends Controller
      */
     public function update(UpdateIdeaRequest $request, Idea $idea)
     {
-        //
+        
+        Gate::authorize('workWith', $idea);
     }
 
     /**
@@ -100,8 +94,24 @@ class IdeaController extends Controller
      */
     public function destroy(Idea $idea)
     {
-        $idea->delete($idea->id);   
+        Gate::authorize('workWith', $idea);
+        
+        $idea->delete($idea->id);
 
         return redirect('/');
+    }
+
+
+    /***
+     * Remove the featured image an Idea has 
+     * */
+    public function destroyImage(Idea $idea){
+        Gate::authorize('workWith', $idea);
+        
+        Storage::disk('public')->delete($idea->image_path);
+
+        $idea->update(['image_path' => NULL]);
+
+        return back();
     }
 }
