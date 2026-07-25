@@ -7,13 +7,18 @@
         x-data="{
             status: @js(old('status', $idea->status->value)),
             newLink: '',
-            links: [@js(old('links', $idea->links))],
+            links: @js(old('links', $idea->links ?? [])),
 
             newStep: '',
-            steps: @js(old('steps', $idea->steps->map(fn($step) => $step->description)))
+            steps: @js(old('steps', $idea->steps->map->only(['id', 'description', 'completed'])))
         }" 
-        action="{{ route('idea.store') }}" enctype="multipart/form-data" method="POST" class="">
+        action="{{ $idea->exists ? route('idea.update', $idea) : route('idea.store') }}" enctype="multipart/form-data" method="POST" class="">
         @csrf
+
+        @if ($idea->exists)
+            @method('PATCH')
+        @endif
+
         <div class="space-y-6">
             <x-form.input 
                 type="text" 
@@ -76,9 +81,11 @@
                 <fieldset class="space-y-3">
                     <legend class="label">Actionable Steps</legend>
 
-                    <template x-for="(step, index) in steps">
+                    <template x-for="(step, index) in steps" :key="index">
                         <div class="flex justify-between items-center gap-x-2">
-                            <input type="text" name="steps[]" id="" x-model="step" class="input">
+                            <input type="text" :name="`steps[${index}][description]`" x-model="step.description" class="input">
+                            <input type="hidden" :name="`steps[${index}][completed]`" :value="step.completed ? '1' : '0'">
+
                             <button type="button" @click="steps.splice(index, 1)" class="btn bg-red-600">X</button>
                         </div>
                     </template>
@@ -89,7 +96,7 @@
                         >
 
                         <button aria-label="add-idea-step" type="button" class="btn" 
-                            @click="steps.push(newStep.trim()); newStep = '';"
+                            @click="steps.push({description: newStep.trim(), completed: false }); newStep = '';"
                             :disabled="newStep.trim().length === 0"
                         >
                             +
@@ -132,7 +139,7 @@
                 Cancel
             </button>
             <button class="btn w-1/3 h-10">
-                Create
+                {{ $idea->exists ? 'Update' : 'Create' }}
             </button>
 
         </div>

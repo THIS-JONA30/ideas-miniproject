@@ -5,14 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateIdeaRequest extends FormRequest
+class IdeaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,15 @@ class UpdateIdeaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|string|min:5|max:255',
+            'description' => 'nullable|string|max:255',
+            'status' => 'required|string',
+            'links' => 'nullable|array',
+            'links.*' => 'url|max:255',
+            'steps' => 'nullable|array',
+            'steps.*.description' => 'string|max:255',
+            'steps.*.completed' => 'boolean',
+            'image' => 'nullable|image|max:5120'
         ];
     }
 }

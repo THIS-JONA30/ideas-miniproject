@@ -14,14 +14,18 @@
         @endguest
 
         @auth
-            <form action="/logout" method="POST">
-                @csrf
-                @method('DELETE')
+            <div class="flex justify-center items-center gap-4">
+                <a href="/profile/edit">My Profile</a>
 
-                <button class="btn">
-                    Logout
-                </button>
-            </form>
+                <form action="/logout" method="POST">
+                    @csrf
+                    @method('DELETE')
+
+                    <button class="btn">
+                        Logout
+                    </button>
+                </form>
+            </div>
         @endauth
     </div>
 </nav>

@@ -7,13 +7,8 @@ use App\Models\Idea;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class CreateIdea{
-    public function handle(array $attributes, ?User $user = NULL){
-        // Create the new Idea 
-        // dd($attributes);
-
-        /** @var User  **/
-        $user ??= Auth::user();
+class UpdateIdea{
+    public function handle(array $attributes, Idea $idea){
 
         $data = collect($attributes)->only([
             'title', 'description', 'status', 'links'
@@ -23,9 +18,11 @@ class CreateIdea{
             $data['image_path'] = $attributes['image']->store('ideas', 'public');
         }
 
-        DB::transaction(function() use($attributes, $data, $user){
-            $idea = $user->ideas()->create($data);
-    
+        DB::transaction(function() use($idea, $attributes, $data){
+            $idea->update($data);
+
+            $idea->steps()->delete();
+
             $idea->steps()->createMany($attributes['steps'] ?? []);
         });
 

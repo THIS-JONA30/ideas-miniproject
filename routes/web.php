@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\IdeaController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionsController;
@@ -14,11 +15,16 @@ Route::middleware('auth')->group(function() {
     Route::get('/idea/{idea}', [IdeaController::class, 'show'])->name('idea.show');
     Route::delete('/idea/{idea}', [IdeaController::class, 'destroy'])->name('idea.delete');
 
+    Route::patch('/idea/{idea}', [IdeaController::class, 'update'])->name('idea.update');
+
     Route::delete('/idea/{idea}/image', [IdeaController::class, 'destroyImage'])->name('idea.destroyImage');
 
     Route::patch('/step/{step}', [StepController::class, 'update'])->name('step.update');
 
     Route::delete('logout', [SessionsController::class, 'destroy']);
+
+    Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 
